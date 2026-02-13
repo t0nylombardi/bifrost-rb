@@ -9,4 +9,6 @@
 
 # rspec failure tracking
 .rspec_status
+.ccignore
+code_output.txt
 AGENTS.md
