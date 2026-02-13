@@ -9,7 +9,7 @@ Gem::Specification.new do |spec|
   spec.email = ["iam@t0nylombardi.com"]
 
   spec.summary = "Framework-agnostic CQRS engine for Ruby"
-  spec.description = "Bifrost-rb is a result-driven, minimal CQRS engine with "\
+  spec.description = "Bifrost-rb is a result-driven, minimal CQRS engine with " \
     "dry-rb validation and middleware hooks for production workloads."
   spec.homepage = "https://github.com/t0nylombardi/bifrost-rb"
   spec.license = "MIT"

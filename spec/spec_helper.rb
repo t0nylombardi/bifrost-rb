@@ -1,5 +1,13 @@
 # frozen_string_literal: true
 
+require "simplecov"
+
+SimpleCov.start do
+  enable_coverage :branch
+  track_files "lib/**/*.rb"
+  minimum_coverage 100
+end
+
 require "bifrost"
 
 require "pry-byebug"
