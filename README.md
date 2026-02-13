@@ -1,39 +1,79 @@
-# Bifrost::Rb
+# Bifrost-rb
 
-TODO: Delete this and the text below, and describe your gem
+Bifrost-rb is a framework-agnostic CQRS engine for Ruby.
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/bifrost/rb`. To experiment with that code, run `bin/console` for an interactive prompt.
+It is designed to be:
+
+- Result-driven (`Success` / `Failure` outcomes)
+- Explicit and predictable (no hidden magic)
+- Minimal but production-aware
+- Easy to integrate in Rails, Sinatra, Roda, Hanami, or plain Ruby apps
+
+## Status
+
+`0.1.0` is an initial foundation release.
+
+The public CQRS API is currently being built. The roadmap below captures the intended stable surface.
+
+## Roadmap
+
+- `Bifrost::Command` and `Bifrost::Query` base objects
+- Monadic result contract for all executions
+- Contract validation via `dry-validation`
+- Middleware chain hooks for logging, metrics, and tracing
+- Lightweight dependency container and explicit execution context
 
 ## Installation
 
-TODO: Replace `UPDATE_WITH_YOUR_GEM_NAME_IMMEDIATELY_AFTER_RELEASE_TO_RUBYGEMS_ORG` with your gem name right after releasing it to RubyGems.org. Please do not do it earlier due to security reasons. Alternatively, replace this section with instructions to install your gem from git if you don't plan to release to RubyGems.org.
+Add to your Gemfile:
 
-Install the gem and add to the application's Gemfile by executing:
-
-```bash
-bundle add UPDATE_WITH_YOUR_GEM_NAME_IMMEDIATELY_AFTER_RELEASE_TO_RUBYGEMS_ORG
+```ruby
+gem "bifrost-rb"
 ```
 
-If bundler is not being used to manage dependencies, install the gem by executing:
+Or install directly:
 
 ```bash
-gem install UPDATE_WITH_YOUR_GEM_NAME_IMMEDIATELY_AFTER_RELEASE_TO_RUBYGEMS_ORG
+gem install bifrost-rb
 ```
 
-## Usage
+## Intended Usage (Target API)
 
-TODO: Write usage instructions here
+The API below is the direction for upcoming releases and may evolve slightly before `1.0`.
+
+```ruby
+result = Users::RegisterCommand.call(
+  params: { email: "dev@example.com", password: "s3cret-passphrase" },
+  context: { request_id: "req_123" }
+)
+
+if result.success?
+  puts result.value![:user_id]
+else
+  puts result.failure[:errors]
+end
+```
 
 ## Development
 
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+```bash
+bin/setup
+bundle exec rspec
+```
 
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and the created tag, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+## Release
+
+```bash
+bundle exec rake install
+bundle exec rake release
+```
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/bifrost-rb.
+Issues and pull requests are welcome:
+
+- https://github.com/t0nylombardi/bifrost-rb
 
 ## License
 
-The gem is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
+Bifrost-rb is released under the MIT License. See `LICENSE.txt`.
