@@ -2,9 +2,8 @@ PATH
   remote: .
   specs:
     bifrost-rb (0.1.0)
+      activesupport
       dry-monads (~> 1.8)
-      dry-struct (~> 1.5)
-      dry-types (~> 1.5)
       dry-validation (~> 1.11)
 
 GEM
@@ -100,11 +99,6 @@ GEM
       dry-logic (~> 1.6)
       dry-types (~> 1.8)
       zeitwerk (~> 2.6)
-    dry-struct (1.8.0)
-      dry-core (~> 1.1)
-      dry-types (~> 1.8, >= 1.8.2)
-      ice_nine (~> 0.11)
-      zeitwerk (~> 2.6)
     dry-types (1.9.1)
       bigdecimal (>= 3.0)
       concurrent-ruby (~> 1.0)
@@ -123,7 +117,6 @@ GEM
     ffi (1.17.3-arm64-darwin)
     i18n (1.14.8)
       concurrent-ruby (~> 1.0)
-    ice_nine (0.11.2)
     io-console (0.8.2)
     irb (1.17.0)
       pp (>= 0.6.0)
@@ -312,14 +305,12 @@ CHECKSUMS
   dry-logic (1.6.0) sha256=da6fedbc0f90fc41f9b0cc7e6f05f5d529d1efaef6c8dcc8e0733f685745cea2
   dry-monads (1.9.0) sha256=9348a67b5c862c7a876342dbd94737fdf3fb3c17978382cf6801a85b27215816
   dry-schema (1.15.0) sha256=0f2a34adba4206bd6d46ec1b6b7691b402e198eecaff1d8349a7d48a77d82cd2
-  dry-struct (1.8.0) sha256=74c38b559924fb6462ac43ec780c4533a082d7b1d238a8d7857b773b3b8e2966
   dry-types (1.9.1) sha256=baebeecdb9f8395d6c9d227b62011279440943e3ef2468fe8ccc1ba11467f178
   dry-validation (1.11.1) sha256=70900bb5a2d911c8aab566d3e360c6bff389b8bf92ea8e04885ce51c41ff8085
   erb (6.0.1) sha256=28ecdd99c5472aebd5674d6061e3c6b0a45c049578b071e5a52c2a7f13c197e5
   ffi (1.17.3) sha256=0e9f39f7bb3934f77ad6feab49662be77e87eedcdeb2a3f5c0234c2938563d4c
   ffi (1.17.3-arm64-darwin) sha256=0c690555d4cee17a7f07c04d59df39b2fba74ec440b19da1f685c6579bb0717f
   i18n (1.14.8) sha256=285778639134865c5e0f6269e0b818256017e8cde89993fdfcbfb64d088824a5
-  ice_nine (0.11.2) sha256=5d506a7d2723d5592dc121b9928e4931742730131f22a1a37649df1c1e2e63db
   io-console (0.8.2) sha256=d6e3ae7a7cc7574f4b8893b4fca2162e57a825b223a177b7afa236c5ef9814cc
   irb (1.17.0) sha256=168c4ddb93d8a361a045c41d92b2952c7a118fa73f23fe14e55609eb7a863aae
   json (2.18.1) sha256=fe112755501b8d0466b5ada6cf50c8c3f41e897fa128ac5d263ec09eedc9f986

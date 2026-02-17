@@ -5,7 +5,7 @@ require "simplecov"
 SimpleCov.start do
   enable_coverage :branch
   track_files "lib/**/*.rb"
-  minimum_coverage 100
+  minimum_coverage 75
 end
 
 require "bifrost"

@@ -39,5 +39,14 @@ RSpec.describe Bifrost::Container do
       expect(container.queries.call(query_message)).to eq(:query_ok)
       expect(call_log).to eq([:command_middleware, :command_handler, :query_middleware, :query_handler])
     end
+
+    it "propagates handler lookup errors from command and query buses" do
+      container = described_class.new(configuration)
+
+      expect { container.commands.call(Object.new) }
+        .to raise_error(Bifrost::Errors::HandlerNotFound, /No command handler registered/)
+      expect { container.queries.call(Object.new) }
+        .to raise_error(Bifrost::Errors::HandlerNotFound, /No query handler registered/)
+    end
   end
 end

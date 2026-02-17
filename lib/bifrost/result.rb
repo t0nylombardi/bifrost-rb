@@ -21,7 +21,7 @@ module Bifrost
       # @param [Object] value successful payload
       # @return [Success] success result object
       def self.success(value)
-        Success(value)
+        Bifrost::Result::Success(value)
       end
 
       # @return [true]
@@ -49,7 +49,7 @@ module Bifrost
       # @param [Hash] meta additional structured failure context
       # @return [Failure] failure result object
       def self.failure(error, meta = {})
-        Failure([error, meta])
+        Bifrost::Result::Failure([error, meta])
       end
 
       # @return [false]

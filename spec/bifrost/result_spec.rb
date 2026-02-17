@@ -11,6 +11,15 @@ RSpec.describe Bifrost::Result do
       expect(result.success?).to be(true)
       expect(result.failure?).to be(false)
     end
+
+    describe ".success" do
+      it "builds a dry-monads Success result with the provided value" do
+        monad = described_class.success("payload")
+
+        expect(monad).to be_a(Dry::Monads::Result::Success)
+        expect(monad.value!).to eq("payload")
+      end
+    end
   end
 
   describe Bifrost::Result::Failure do
@@ -27,6 +36,21 @@ RSpec.describe Bifrost::Result do
       result = described_class.new(:invalid, field: :email)
 
       expect(result.meta).to eq({field: :email})
+    end
+
+    describe ".failure" do
+      it "builds a dry-monads Failure result with error and metadata tuple" do
+        monad = described_class.failure(:invalid, field: :email)
+
+        expect(monad).to be_a(Dry::Monads::Result::Failure)
+        expect(monad.failure).to eq([:invalid, {field: :email}])
+      end
+
+      it "uses empty metadata by default" do
+        monad = described_class.failure(:invalid)
+
+        expect(monad.failure).to eq([:invalid, {}])
+      end
     end
   end
 end
