@@ -23,7 +23,7 @@ Gem::Specification.new do |spec|
   spec.files = IO.popen(%w[git ls-files -z], chdir: __dir__, err: IO::NULL) do |ls|
     ls.readlines("\x0", chomp: true).reject do |f|
       (f == gemspec) ||
-        f.start_with?(*%w[bin/ Gemfile .gitignore .rspec spec/])
+        f.start_with?(*%w[Gemfile .gitignore .rspec spec/])
     end
   end
   spec.bindir = "bin"
@@ -32,5 +32,6 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency "dry-monads", "~> 1.8"
   spec.add_dependency "dry-validation", "~> 1.11"
-  spec.add_dependency "activesupport"
+  spec.add_dependency "activesupport", "~> 8.1", ">= 8.1.2"
+  spec.add_dependency "zeitwerk", "~> 2.6"
 end

@@ -23,8 +23,43 @@ RSpec.describe Bifrost::Generators::TemplateRenderer do
 
         expect(File).to exist(create_file)
         expect(File).to exist(get_file)
+        expect(File.read(create_file)).to include("module Users")
+        expect(File.read(get_file)).to include("module Users")
+        expect(File.read(create_file)).to include("def self.create_user(**attrs)")
+        expect(File.read(get_file)).to include("def self.get_user(id:)")
         expect(File.read(create_file)).to include("class CreateUser")
         expect(File.read(get_file)).to include("class GetUser")
+      end
+    end
+
+    it "builds command and query objects through module APIs" do
+      Dir.mktmpdir do |root|
+        FileUtils.mkdir_p(File.join(root, "app/commands/users"))
+        FileUtils.mkdir_p(File.join(root, "app/queries/users"))
+        FileUtils.mkdir_p(File.join(root, "app/handlers/users"))
+        FileUtils.mkdir_p(File.join(root, "app/domains/users"))
+        context = Bifrost::Generators::NamingContext.new("users")
+
+        described_class.new(context, root: root, full: false).call
+
+        begin
+          Object.send(:remove_const, :Commands) if Object.const_defined?(:Commands)
+          Object.send(:remove_const, :Queries) if Object.const_defined?(:Queries)
+
+          load File.join(root, "app/commands/users/create_user.rb")
+          load File.join(root, "app/queries/users/get_user.rb")
+
+          command = Commands::Users.create_user(name: "Ada")
+          query = Queries::Users.get_user(id: 42)
+
+          expect(command).to be_a(Commands::Users::CreateUser)
+          expect(command.attrs).to eq({name: "Ada"})
+          expect(query).to be_a(Queries::Users::GetUser)
+          expect(query.id).to eq(42)
+        ensure
+          Object.send(:remove_const, :Commands) if Object.const_defined?(:Commands)
+          Object.send(:remove_const, :Queries) if Object.const_defined?(:Queries)
+        end
       end
     end
 
@@ -43,6 +78,8 @@ RSpec.describe Bifrost::Generators::TemplateRenderer do
         expect(File).to exist(register_file)
         expect(File.read(register_file)).to include("module Domains")
         expect(File.read(register_file)).to include("def self.register(config, repo:)")
+        expect(File.read(register_file)).to include("Commands::Users::CreateUser")
+        expect(File.read(register_file)).to include("Queries::Users::GetUser")
       end
     end
 

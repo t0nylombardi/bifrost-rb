@@ -75,8 +75,16 @@ module Bifrost
           "app/commands/#{@context.plural}/create_#{@context.singular}.rb",
           <<~RUBY
             module Commands
-              module #{@context.module_name}
+              module #{@context.plural.camelize}
+                def self.create_#{@context.singular}(**attrs)
+                  Create#{@context.class_name}.new(**attrs)
+                end
+
                 class Create#{@context.class_name}
+                  def self.call(**attrs)
+                    new(**attrs)
+                  end
+
                   def initialize(**attrs)
                     @attrs = attrs
                   end
@@ -97,8 +105,16 @@ module Bifrost
           "app/queries/#{@context.plural}/get_#{@context.singular}.rb",
           <<~RUBY
             module Queries
-              module #{@context.module_name}
+              module #{@context.plural.camelize}
+                def self.get_#{@context.singular}(id:)
+                  Get#{@context.class_name}.new(id: id)
+                end
+
                 class Get#{@context.class_name}
+                  def self.call(id:)
+                    new(id: id)
+                  end
+
                   def initialize(id:)
                     @id = id
                   end
@@ -123,13 +139,13 @@ module Bifrost
               module #{@context.module_name}
                 def self.register(config, repo:)
                   config.register_command(
-                    Commands::#{@context.module_name}::Create#{@context.class_name},
-                    Handlers::#{@context.module_name}::Create#{@context.class_name}Handler.new(repo: repo)
+                    Commands::#{@context.plural.camelize}::Create#{@context.class_name},
+                    Handlers::#{@context.plural.camelize}::Create#{@context.class_name}Handler.new(repo: repo)
                   )
 
                   config.register_query(
-                    Queries::#{@context.module_name}::Get#{@context.class_name},
-                    Handlers::#{@context.module_name}::Get#{@context.class_name}Handler.new(repo: repo)
+                    Queries::#{@context.plural.camelize}::Get#{@context.class_name},
+                    Handlers::#{@context.plural.camelize}::Get#{@context.class_name}Handler.new(repo: repo)
                   )
                 end
               end
@@ -154,7 +170,7 @@ module Bifrost
           "app/handlers/#{@context.plural}/create_#{@context.singular}_handler.rb",
           <<~RUBY
             module Handlers
-              module #{@context.module_name}
+              module #{@context.plural.camelize}
                 class Create#{@context.class_name}Handler
                   def initialize(repo:)
                     @repo = repo
@@ -178,7 +194,7 @@ module Bifrost
           "app/handlers/#{@context.plural}/get_#{@context.singular}_handler.rb",
           <<~RUBY
             module Handlers
-              module #{@context.module_name}
+              module #{@context.plural.camelize}
                 class Get#{@context.class_name}Handler
                   def initialize(repo:)
                     @repo = repo

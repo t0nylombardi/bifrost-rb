@@ -2,9 +2,10 @@ PATH
   remote: .
   specs:
     bifrost-rb (0.1.0)
-      activesupport
+      activesupport (~> 8.1, >= 8.1.2)
       dry-monads (~> 1.8)
       dry-validation (~> 1.11)
+      zeitwerk (~> 2.6)
 
 GEM
   remote: https://rubygems.org/

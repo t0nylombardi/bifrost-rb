@@ -1,10 +1,13 @@
 # frozen_string_literal: true
 
-require "bifrost/configuration"
-require "bifrost/container"
-require "bifrost/errors"
-require "bifrost/result"
-require "bifrost/version"
+require "zeitwerk"
+
+loader = Zeitwerk::Loader.for_gem
+loader.inflector.inflect(
+  "cli" => "CLI"
+)
+
+loader.setup
 
 # Root namespace for the Bifrost CQRS engine.
 module Bifrost

@@ -19,7 +19,7 @@ module Bifrost
     # @api public
     class NamingContext
       # @return [String] Underscored singular resource name (e.g. `user`).
-      attr_reader :singular, :plural, :class_name, :module_name
+      attr_reader :singular, :plural, :class_name, :module_name, :domain_module_name
 
       # @param resource [#to_s] User-provided resource name.
       # @raise [NoMethodError] If ActiveSupport inflection methods are
@@ -31,6 +31,7 @@ module Bifrost
         @plural = normalized.pluralize
         @class_name = normalized.classify
         @module_name = @plural.classify
+        @domain_module_name = @plural.classify
       end
     end
   end
