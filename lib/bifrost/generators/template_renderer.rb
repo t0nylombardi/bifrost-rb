@@ -55,6 +55,14 @@ module Bifrost
         ]
       end
 
+      # Generates all base command/query handler templates.
+      #
+      # @return [void]
+      def generate_handlers
+        generate_create_handler
+        generate_get_handler
+      end
+
       # Writes file content unless file already exists.
       #
       # @param relative_path [String] Path relative to `@root`.
@@ -152,14 +160,6 @@ module Bifrost
             end
           RUBY
         )
-      end
-
-      # Generates all base command/query handler templates.
-      #
-      # @return [void]
-      def generate_handlers
-        generate_create_handler
-        generate_get_handler
       end
 
       # Generates `Create*Handler` command handler skeleton.

@@ -19,9 +19,24 @@ RSpec.describe Bifrost::Generators::Domain do
         expect { result = described_class.new("users", root: root).call }.to output(/Domain 'User' created/).to_stdout
 
         expect(result).to be_success
+        expect(File).to exist(File.join(root, "config/bifrost.rb"))
         expect(File).to be_directory(File.join(root, "app/domains/users"))
         expect(File).to exist(File.join(root, "app/commands/users/create_user.rb"))
         expect(File).to exist(File.join(root, "app/queries/users/get_user.rb"))
+      end
+    end
+
+    it "does not overwrite an existing config file" do
+      Dir.mktmpdir do |root|
+        FileUtils.mkdir_p(File.join(root, "app"))
+        config_path = File.join(root, "config/bifrost.rb")
+        FileUtils.mkdir_p(File.dirname(config_path))
+        File.write(config_path, "existing config")
+
+        result = described_class.new("users", root: root).call
+
+        expect(result).to be_success
+        expect(File.read(config_path)).to eq("existing config")
       end
     end
 
@@ -53,6 +68,21 @@ RSpec.describe Bifrost::Generators::Domain do
         allow(Bifrost::Generators::NamingContext).to receive(:new).with("users").and_return(context)
         allow(Bifrost::Generators::DirectoryBuilder).to receive(:new).with(context, root: root).and_return(builder)
         allow(builder).to receive(:call).and_raise(Errno::EACCES, "Permission denied")
+
+        result = described_class.new("users", root: root).call
+
+        expect(result).to be_failure
+        expect(result.failure.first).to eq(:filesystem_error)
+      end
+    end
+
+    it "returns filesystem_error failure when config creation raises" do
+      Dir.mktmpdir do |root|
+        FileUtils.mkdir_p(File.join(root, "app"))
+        config_dir = File.join(root, "config")
+
+        allow(FileUtils).to receive(:mkdir_p).and_call_original
+        allow(FileUtils).to receive(:mkdir_p).with(config_dir).and_raise(Errno::EACCES, "Permission denied")
 
         result = described_class.new("users", root: root).call
 

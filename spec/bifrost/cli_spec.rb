@@ -3,8 +3,21 @@
 require "spec_helper"
 require "bifrost/cli"
 require "bifrost/generators/domain"
+require "bifrost/generators/initializer"
 
 RSpec.describe Bifrost::CLI do
+  describe "#init" do
+    it "builds an initializer rooted at Dir.pwd and executes it" do
+      cli = described_class.new
+      initializer = instance_double(Bifrost::Generators::Initializer)
+
+      expect(Bifrost::Generators::Initializer).to receive(:new).with(root: Dir.pwd).and_return(initializer)
+      expect(initializer).to receive(:call)
+
+      cli.init
+    end
+  end
+
   describe "#create" do
     it "builds a domain generator with full option and executes it" do
       cli = described_class.new

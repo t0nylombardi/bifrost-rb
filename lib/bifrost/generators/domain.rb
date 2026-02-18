@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "dry/monads"
+require "fileutils"
 
 module Bifrost
   module Generators
@@ -43,6 +44,7 @@ module Bifrost
       def call
         normalize
           .bind { |context| validate_root(context) }
+          .bind { |context| generate_config(context) }
           .bind { |context| build_directories(context) }
           .bind { |context| render_templates(context) }
           .bind { |context| print_instructions(context) }
@@ -68,6 +70,51 @@ module Bifrost
       def validate_root(context)
         return Failure([:invalid_root, "No app directory found"]) unless File.directory?(File.join(@root, "app"))
         Success(context)
+      end
+
+      # Creates `config/bifrost.rb` when it does not already exist.
+      #
+      # @param context [Bifrost::Generators::NamingContext]
+      # @return [Dry::Monads::Result::Success<Bifrost::Generators::NamingContext>,
+      #   Dry::Monads::Result::Failure<Array(Symbol, String)>]
+      def generate_config(context)
+        generate_config_file
+        Success(context)
+      rescue => e
+        Failure([:filesystem_error, e.message])
+      end
+
+      # Writes the gem bootstrap config file if missing.
+      #
+      # @return [void]
+      def generate_config_file
+        config_path = File.join(@root, "config", "bifrost.rb")
+        return if File.exist?(config_path)
+
+        FileUtils.mkdir_p(File.dirname(config_path))
+        File.write(config_path, config_template)
+      end
+
+      # Returns the default `config/bifrost.rb` template content.
+      #
+      # @return [String]
+      def config_template
+        <<~CFG_TEMPLATE
+          require "bifrost"
+
+          # Require domain registration files
+          Dir[File.join(__dir__, "../app/domains/**/register.rb")].each do |file|
+            require file
+          end
+
+          BIFROST_CONTAINER = Bifrost.build do |config|
+            # Register domains below
+            #
+            # Example:
+            # repo = Domains::Users::Repository.new
+            # Domains::Users.register(config, repo: repo)
+          end
+        CFG_TEMPLATE
       end
 
       # Creates required domain directories.
